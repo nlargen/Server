@@ -38,9 +38,22 @@ public class ResponseThread extends Thread
 			{
 				try 
 				{
-					//read in bytes from the client
-					theClient.readByte();
-				} 
+					String whichByte = this.theClient.getMessage();  
+					for(ConnectedClient cc : Driver.theNotBusyClients)
+					{
+						if(cc != this.theClient && cc.hasByte(Integer.parseInt(whichByte)))
+						{
+							Driver.theNotBusyClients.remove(cc); //remove and make this client busy
+							Driver.theBusyClients.add(cc);
+							//share the byte with the guy who asked
+							cc.sendMessage(whichByte); //request byte
+							String response = cc.getMessage();   //receive byte
+							this.theClient.sendMessage(response);//send byte to the client requesting
+							Driver.theBusyClients.remove(cc);//remove and make this client not busy
+							Driver.theNotBusyClients.add(cc);
+						} 
+					}
+				}
 				catch (Exception e) 
 				{
 
@@ -63,7 +76,7 @@ public class ResponseThread extends Thread
 			{
 				if(cc != this.theClient && cc.hasByte(Integer.parseInt(whichByte)))
 				{
-					//share the byte with this guy
+					this.theClient.sendMessage(whichByte);
 				}
 			}
 
