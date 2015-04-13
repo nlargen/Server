@@ -38,13 +38,8 @@ public class ResponseThread extends Thread
 			{
 				try 
 				{
-					
 					//read in bytes from the client
 					theClient.readByte();
-					// send files out 
-					FileOutputStream fos = new FileOutputStream("" + theClient.readByte());
-					
-					
 				} 
 				catch (Exception e) 
 				{
